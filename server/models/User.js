@@ -1,10 +1,10 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
 
-const userSchema= new mongoose.Schema(
-    {
-name:{type:String,require:true},
-email:{type:String,require:true},
-password: { type: String, required: true },
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
     shopName: { type: String, required: true },
     address: { type: String },
     tenantId: { type: String, required: true, unique: true },
@@ -12,4 +12,4 @@ password: { type: String, required: true },
   { timestamps: true }
 );
 
-export const User=mongoose.model("User",userSchema);
+module.exports = mongoose.model("User", userSchema);

@@ -1,37 +1,53 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-const generateToken = require('../utils/generateToken');
+const jwt = require('jsonwebtoken');
 
+// Signup Controller
 exports.signup = async (req, res) => {
   try {
-    const { name, shopName, email, address, password } = req.body;
+    const { name, email, password, shopName, address } = req.body;
+    const tenantId = Math.random().toString(36).substring(2, 10); // Example ID
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+    if (existingUser)
+      return res.status(400).json({ message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const tenantId = shopName.toLowerCase().replace(/\s+/g, '') + Date.now(); // ex: codesbook1717
 
-    const user = await User.create({ name, shopName, email, address, password: hashedPassword, tenantId });
+    const newUser = await User.create({
+      name,
+      email,
+      shopName,
+      address,
+      password: hashedPassword,
+      tenantId, // ✅ Add this line
+    });
 
-    const token = generateToken(user._id, user.tenantId);
-    res.status(201).json({ user, token });
+    const token = jwt.sign({ id: newUser._id }, 'your_jwt_secret', {
+      expiresIn: '1d',
+    });
+
+    res.status(201).json({ user: newUser, token });
   } catch (err) {
-    res.status(500).json({ message: 'Signup failed', error: err.message });
+    console.log('Signup Error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
+
+// Login Controller
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const token = generateToken(user._id, user.tenantId);
+    const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1d' });
+
     res.status(200).json({ user, token });
   } catch (err) {
     res.status(500).json({ message: 'Login failed', error: err.message });
