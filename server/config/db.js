@@ -10,6 +10,8 @@ const connectDB = async () => {
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 9000, // 5 sec timeout
       socketTimeoutMS: 45000, // 45 sec timeout
+      // ssl: true,
+      //tlsInsecure: true,
     });
 
     console.log("✅ MongoDB Connected Successfully");

@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 
 // Signup Controller
 exports.signup = async (req, res) => {
+
+  console.log("req",req.body);
   try {
     const { name, email, password, shopName, address } = req.body;
     const tenantId = Math.random().toString(36).substring(2, 10); // Example ID
@@ -23,10 +25,10 @@ exports.signup = async (req, res) => {
       tenantId, // ✅ Add this line
     });
 
-    const token = jwt.sign({ id: newUser._id }, 'your_jwt_secret', {
+    const token = jwt.sign({ id: newUser._id,tenantId: newUser.tenantId }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
-
+console.log(token);
     res.status(201).json({ user: newUser, token });
   } catch (err) {
     console.log('Signup Error:', err);
@@ -46,7 +48,7 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id ,tenantId:user.tenantId}, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     res.status(200).json({ user, token });
   } catch (err) {
