@@ -47,29 +47,33 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true);
-    const newErrors = validateForm();
-    if (newErrors.email || newErrors.password) {
-      setErrors(newErrors);
-      toast.error('Please fill in all required fields correctly');
-      setIsSubmitting(false);
-      return;
-    }
+  setIsSubmitting(true);
+  const newErrors = validateForm();
+  if (newErrors.email || newErrors.password) {
+    setErrors(newErrors);
+    toast.error('Please fill in all required fields correctly');
+    setIsSubmitting(false);
+    return;
+  }
 
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        email: formData.email,
-        password: formData.password,
-      });
-      localStorage.setItem('token', response.data.token);
-      toast.success('Login successful');
-      navigate('/dashboard');
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/login', {
+      email: formData.email,
+      password: formData.password,
+    });
+
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('tenantId', response.data.user.tenantId); // ✅ Important!
+    
+    toast.success('Login successful');
+    navigate('/dashboard');
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Login failed');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 h-full w-full bg-gradient-to-br from-blue-600 via-blue-500 to-blue-300 flex items-center justify-center p-4 overflow-hidden">

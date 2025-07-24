@@ -54,7 +54,6 @@ exports.addProduct = async (req, res) => {
       sku,
       barcode: barcodePath, // new field
     });
-
     await newProduct.save();
 
     return res.status(201).json({
@@ -78,8 +77,10 @@ exports.addProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const tenantId = req.user.tenantId;
+const tenantId = req.tenantId;
     //console.log(tenantId);
+        console.log('🔥 Tenant ID:', tenantId); // 👈 Add this line
+
 
     // Filters & Query Params
     const {
@@ -97,11 +98,12 @@ exports.getAllProducts = async (req, res) => {
       tenantId,
     //  isDeleted: false, //in future if i want to do softdelete just delete from screen not from db
     };
-
+console.log("🔍 Tenant ID being used:", req.tenantId);
+console.log("🔍 Full Query:", query);
     // Search logic
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
+        { productName: { $regex: search, $options: 'i' } },
         { sku: { $regex: search, $options: 'i' } },
       ];
     }
@@ -151,8 +153,8 @@ console.log(productsWithStockStatus);
       currentPage: parseInt(page),
       totalPages: Math.ceil(totalProducts / limit),
       totalProducts,
-      products,
-       products: productsWithStockStatus,
+      products: productsWithStockStatus
+
     });
   } catch (error) {
     console.error('❌ Error fetching products:', error);
