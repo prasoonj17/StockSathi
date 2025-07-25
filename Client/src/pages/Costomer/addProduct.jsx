@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import { PlusCircleIcon, ArrowDownTrayIcon, PrinterIcon } from '@heroicons/react/24/solid';
+import {  Loader2 } from "lucide-react"; // loader icon
+import { toast } from 'react-toastify';
+import { useMemo } from 'react';
 
 const AddProduct = () => {
+
+  
   const [formData, setFormData] = useState({
     productName: '',
     category: '',
@@ -20,10 +25,14 @@ const AddProduct = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [productId, setProductId] = useState(null);
   const [barcode, setBarcode] = useState('');
+  const[loading,setLoading]=useState(false);
 
   // Predefined options for dropdowns
   const categories = ['Kirana', 'Garments', 'General', 'Electronics'];
   const unitTypes = ['pcs', 'kg', 'litre', 'box'];
+
+
+
 
   // Handle input change
   const handleChange = (e) => {
@@ -47,7 +56,9 @@ const AddProduct = () => {
 
   // Handle form submit
   const handleSubmit = async (e) => {
+   
     e.preventDefault();
+     setLoading(true);
     setSuccessMessage('');
     setErrorMessage('');
 
@@ -71,7 +82,7 @@ const AddProduct = () => {
       }
 
       const data = await response.json();
-      console.log('Received barcode data:', data.product.barcode); // Debug barcode
+      //console.log('Received barcode data:', data.product.barcode); // Debug barcode
       setSuccessMessage(data.message);
       setProductId(data.product._id);
       setBarcode(data.product.barcode); // Expecting Cloudinary URL
@@ -89,6 +100,8 @@ const AddProduct = () => {
         variant: '',
         sku: ''
       });
+      toast("product added successfully");
+      setLoading(false);
     } catch (err) {
       let errorMsg = `Error adding product: ${err.message}. `;
       if (err.message.includes('404')) {
@@ -99,9 +112,7 @@ const AddProduct = () => {
         errorMsg += 'Barcode data is invalid. Expecting a valid URL. Check backend response.';
       }
       setErrorMessage(errorMsg);
-      console.error('Add Product Error:', err);
-      console.log('Response Status:', response?.status);
-      console.log('Response Text:', responseText); // Use stored response text
+     
     }
   };
 
@@ -121,7 +132,7 @@ const AddProduct = () => {
             img { max-width: 100%; height: auto; border: 1px solid #1e40af; }
           </style>
         </head>
-        <body>
+        <body> 
           <h2 style="color: #1e40af;">${formData.productName || 'Product'} Barcode</h2>
           <p style="font-size: 16px;">SKU: ${formData.sku}</p>
           <img src="${barcode}" alt="Barcode" style="width: 250px;" onload="window.print(); window.close();" />
@@ -131,7 +142,10 @@ const AddProduct = () => {
     printWindow.document.close();
   };
 
+
+
   return (
+
     <div className="fixed top-0 left-[250px] w-[calc(100%-250px)] h-screen overflow-y-auto bg-white p-6 animate-fade-in">
       <div className="w-full h-full bg-white rounded-lg shadow-lg p-6 border border-blue-200">
         <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center animate-pulse-once">
@@ -324,15 +338,29 @@ const AddProduct = () => {
           </div>
 
           {/* Submit Button */}
-          <div className="lg:col-span-2">
-            <button
-              type="submit"
-              className="w-64 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center animate-pulse-once"
-            >
-              <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
-              Add Product
-            </button>
-          </div>
+     
+
+              <div className="lg:col-span-2">
+      <button
+        type="submit"
+        //onClick={handleSubmit}
+        disabled={loading}
+        className="w-64 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Adding...
+          </>
+        ) : (
+          <>
+            <PlusCircleIcon className="w-5 h-5" />
+            Add Product
+          </>
+        )}
+      </button>
+    </div>
+
         </form>
 
         {/* Success/Error Messages */}
@@ -344,7 +372,7 @@ const AddProduct = () => {
                 onClick={handlePrintBarcode}
                 className="ml-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center animate-pulse"
               >
-                <PrinterIcon className="w-5 h-5 mr-2" />
+                <PrinterIcon className="w-5 h-5 mr-2 text-black" />
                 Print Barcode
               </button>
             )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const EditProduct = ({ product, onClose, onSave }) => {
   const [editedProduct, setEditedProduct] = useState({ ...product });
@@ -14,64 +15,13 @@ const EditProduct = ({ product, onClose, onSave }) => {
 
   const handleSave = () => {
     if (!editedProduct.productName || !editedProduct.quantity) {
-      alert('Product Name and Quantity are required.');
+      toast('Product Name and Quantity are required.');
       return;
     }
     onSave(editedProduct);
     onClose();
   };
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-      try {
-        const token = localStorage.getItem('token');
-        const tenantId = localStorage.getItem('tenantId');
-        const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:5000';
-        const endpoint = `${baseUrl}/api/product/delete/${editedProduct._id}`;
-
-        console.log('Sending delete request to:', endpoint);
-        console.log('Token:', token);
-        console.log('Tenant ID:', tenantId);
-
-        const response = await fetch(endpoint, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-            'x-tenant-id': tenantId,
-          },
-        });
-
-        const textResponse = await response.text();
-        console.log('Raw response:', textResponse);
-
-        let result;
-        try {
-          result = JSON.parse(textResponse);
-        } catch (e) {
-          console.error('Failed to parse response as JSON:', textResponse);
-          throw new Error('Invalid response from server');
-        }
-
-        if (!response.ok) {
-          if (response.status === 404) {
-            alert('Product not found or unauthorized access.');
-          } else if (response.status === 500) {
-            alert('Something went wrong while deleting the product.');
-          } else {
-            alert(`Error: ${result.message || 'Unknown error'}`);
-          }
-          return;
-        }
-
-        alert('Product deleted successfully.');
-        onClose(); // Close modal after successful delete
-      } catch (err) {
-        console.error('Delete error:', err);
-        alert('Something went wrong while deleting the product.');
-      }
-    }
-  };
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
@@ -201,24 +151,21 @@ const EditProduct = ({ product, onClose, onSave }) => {
           </div>
         </div>
         <div className="mt-6 flex justify-end space-x-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 text-white rounded-lg hover:bg-gray-400 transition-all duration-300"
-          >
-            Cancel
-          </button>
+         
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg"
+            className="px-4 py-2  bg-gradient-to-r from-green-500 to-green-700 text-black font-semibold rounded-lg hover:from-blue-600 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg"
           >
             Save
           </button>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold rounded-lg hover:from-red-600 hover:to-red-800 transition-all duration-300 shadow-md hover:shadow-lg"
+
+           <button
+            onClick={onClose}
+           className="px-4 py-2  bg-gradient-to-r from-red-500 to-red-700  text-black font-semibold rounded-lg hover:from-blue-600 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            Delete
+            Cancel
           </button>
+          
         </div>
       </div>
     </div>

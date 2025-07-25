@@ -9,6 +9,7 @@ import Dashboard from './pages/Costomer/dashboard';
 import AddProduct from './pages/Costomer/addProduct';
 import CustomerLayout from './pages/Costomer/CustomerLayout';
 import GetAllProducts from './pages/Costomer/getAllProduct';
+
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,7 @@ function App() {
         </Route>
       </Routes>
 
+      
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </BrowserRouter>
   );
