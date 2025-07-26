@@ -1,8 +1,9 @@
 import React, { use, useState } from 'react';
-import { PlusCircleIcon, ArrowDownTrayIcon, PrinterIcon } from '@heroicons/react/24/solid';
+import { PlusCircleIcon, CheckCircleIcon,ArrowDownTrayIcon, PrinterIcon } from '@heroicons/react/24/solid';
 import {  Loader2 } from "lucide-react"; // loader icon
 import { toast } from 'react-toastify';
 import { useMemo } from 'react';
+//import PlusCircleIcon from '@heroicons/react/24/solid';
 
 const AddProduct = () => {
 
@@ -100,7 +101,7 @@ const AddProduct = () => {
         variant: '',
         sku: ''
       });
-      toast("product added successfully");
+      toast(" ✅ product added successfully");
       setLoading(false);
     } catch (err) {
       let errorMsg = `Error adding product: ${err.message}. `;
@@ -143,248 +144,235 @@ const AddProduct = () => {
   };
 
 
-
-  return (
-
-    <div className="fixed top-0 left-[250px] w-[calc(100%-250px)] h-screen overflow-y-auto bg-white p-6 animate-fade-in">
-      <div className="w-full h-full bg-white rounded-lg shadow-lg p-6 border border-blue-200">
-        <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center animate-pulse-once">
-          <PlusCircleIcon className="w-8 h-8 mr-2 text-blue-600" />
-          Add New Product
-        </h2>
-
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-          {/* Product Name */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Product Name</label>
-            <input
-              type="text"
-              name="productName"
-              value={formData.productName}
-              onChange={handleChange}
-              placeholder="e.g., Parle-G Biscuit"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
+return (
+  <div className="fixed inset-0 overflow-y-auto bg-gray-50 animate-fade-in md:left-[250px]">
+    {/* Main Container - Mobile First Approach */}
+    <div className="w-full  min-h-screen p-4 md:p-6 mx-auto  ">
+      {/* Card with better mobile spacing */}
+      <div className="w-full bg-white rounded-xl shadow-lg p-4 md:p-8 border border-gray-200 transition-all duration-300 hover:shadow-md">
+        
+        {/* Header Section - Responsive */}
+        <div className="mb-6 pb-4 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow w-fit">
+              <PlusCircleIcon className="w-6 h-6 text-white md:w-7 md:h-7" />
+            </div>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-800">
+                  Add New Product
+                </span>
+              </h2>
+              <p className="text-sm md:text-base text-gray-500 mt-1">
+                Fill in the product details below
+              </p>
+            </div>
           </div>
+        </div>
 
-          {/* Category */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
+        {/* Form Grid - Responsive Columns */}
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
+          {/* Dynamic Form Fields (Optimized for Mobile) */}
+          {[
+            {
+              label: "Product Name",
+              name: "productName",
+              type: "text",
+              placeholder: "e.g., Parle-G Biscuit",
+              required: true
+            },
+            {
+              label: "Category",
+              name: "category",
+              type: "select",
+              options: categories,
+              required: true
+            },
+            {
+              label: "Subcategory (Optional)",
+              name: "subcategory",
+              type: "text",
+              placeholder: "e.g., Cotton"
+            },
+            {
+              label: "Brand (Optional)",
+              name: "brand",
+              type: "text",
+              placeholder: "e.g., Levi's"
+            },
+            {
+              label: "Unit Type",
+              name: "unitType",
+              type: "select",
+              options: unitTypes,
+              required: true
+            },
+            {
+              label: "Initial Stock",
+              name: "quantity",
+              type: "number",
+              placeholder: "e.g., 100",
+              min: "0",
+              required: true
+            },
+            {
+              label: "Purchase Price (per unit)",
+              name: "purchasePrice",
+              type: "number",
+              placeholder: "e.g., 50",
+              min: "0",
+              step: "0.01",
+              required: true
+            },
+            {
+              label: "Selling Price (MRP per unit)",
+              name: "sellingPrice",
+              type: "number",
+              placeholder: "e.g., 60",
+              min: "0",
+              step: "0.01",
+              required: true
+            },
+            {
+              label: "Discount % (Optional)",
+              name: "discount",
+              type: "number",
+              placeholder: "e.g., 10",
+              min: "0",
+              max: "100",
+              step: "0.1"
+            },
+            {
+              label: "Min Stock Alert",
+              name: "minStockAlert",
+              type: "number",
+              placeholder: "e.g., 10",
+              min: "0",
+              required: true
+            },
+            {
+              label: "Variant (Optional)",
+              name: "variant",
+              type: "text",
+              placeholder: "e.g., Large"
+            },
+            {
+              label: "SKU Code",
+              name: "sku",
+              type: "text",
+              placeholder: "Auto-generated",
+              required: true
+            }
+          ].map((field) => (
+            <div key={field.name} className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                {field.label}
+                {field.required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              {field.type === "select" ? (
+                <select
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm md:text-base text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all duration-200"
+                  required={field.required}
+                >
+                  <option value="">Select {field.label}</option>
+                  {field.options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  className="w-full px-3 py-2 text-sm md:text-base text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition-all duration-200"
+                  required={field.required}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                />
+              )}
+            </div>
+          ))}
+
+          {/* Submit Button - Centered & Responsive */}
+          <div className="sm:col-span-2 pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full sm:w-64 mx-auto px-6 py-3 rounded-xl font-medium text-white shadow-md transition-all duration-300 ${
+                loading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+              }`}
             >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
+              <div className="flex items-center justify-center space-x-2">
+                {loading ? (
+                  <>
+                    <svg className="w-4 h-4 md:w-5 md:h-5 animate-spin" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span className='text-blue ' >Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <PlusCircleIcon className="w-4 h-4 md:w-5 md:h-5" />
+                    <span>Add Product</span>
+                  </>
+                )}
+              </div>
+            </button>
           </div>
-
-          {/* Subcategory */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Subcategory (Optional)</label>
-            <input
-              type="text"
-              name="subcategory"
-              value={formData.subcategory}
-              onChange={handleChange}
-              placeholder="e.g., Cotton"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Brand */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Brand (Optional)</label>
-            <input
-              type="text"
-              name="brand"
-              value={formData.brand}
-              onChange={handleChange}
-              placeholder="e.g., Levi's"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* Unit Type */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Unit Type</label>
-            <select
-              name="unitType"
-              value={formData.unitType}
-              onChange={handleChange}
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            >
-              <option value="">Select Unit Type</option>
-              {unitTypes.map((unit) => (
-                <option key={unit} value={unit}>
-                  {unit}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Quantity */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Initial Stock Quantity</label>
-            <input
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              placeholder="e.g., 100"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-              min="0"
-            />
-          </div>
-
-          {/* Purchase Price */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Purchase Price</label>
-            <input
-              type="number"
-              name="purchasePrice"
-              value={formData.purchasePrice}
-              onChange={handleChange}
-              placeholder="e.g., 50"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-              min="0"
-              step="0.01"
-            />
-          </div>
-
-          {/* Selling Price */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Selling Price (MRP)</label>
-            <input
-              type="number"
-              name="sellingPrice"
-              value={formData.sellingPrice}
-              onChange={handleChange}
-              placeholder="e.g., 60"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-              min="0"
-              step="0.01"
-            />
-          </div>
-
-          {/* Discount */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Discount % (Optional)</label>
-            <input
-              type="number"
-              name="discount"
-              value={formData.discount}
-              onChange={handleChange}
-              placeholder="e.g., 10"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              min="0"
-              max="100"
-              step="0.1"
-            />
-          </div>
-
-          {/* Min Stock Alert */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Min Stock Alert</label>
-            <input
-              type="number"
-              name="minStockAlert"
-              value={formData.minStockAlert}
-              onChange={handleChange}
-              placeholder="e.g., 10"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-              min="0"
-            />
-          </div>
-
-          {/* Variant */}
-          <div>
-            <label className="block text-blue-700 font-semibold">Variant (Optional)</label>
-            <input
-              type="text"
-              name="variant"
-              value={formData.variant}
-              onChange={handleChange}
-              placeholder="e.g., Large"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-
-          {/* SKU */}
-          <div>
-            <label className="block text-blue-700 font-semibold">SKU Code</label>
-            <input
-              type="text"
-              name="sku"
-              value={formData.sku}
-              onChange={handleChange}
-              placeholder="Auto-generated or edit"
-              className="w-full text-gray-500 p-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          {/* Submit Button */}
-     
-
-              <div className="lg:col-span-2">
-      <button
-        type="submit"
-        //onClick={handleSubmit}
-        disabled={loading}
-        className="w-64 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Adding...
-          </>
-        ) : (
-          <>
-            <PlusCircleIcon className="w-5 h-5" />
-            Add Product
-          </>
-        )}
-      </button>
-    </div>
-
         </form>
 
-        {/* Success/Error Messages */}
+        {/* Responsive Success/Error Messages */}
         {successMessage && (
-          <div className="mt-4 p-3 bg-blue-100 text-blue-800 rounded-lg flex items-center animate-slide-up">
-            <span>{successMessage}</span>
-            {barcode && (
-              <button
-                onClick={handlePrintBarcode}
-                className="ml-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center animate-pulse"
-              >
-                <PrinterIcon className="w-5 h-5 mr-2 text-black" />
-                Print Barcode
-              </button>
-            )}
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl animate-fade-in-up">
+            <div className="flex items-start">
+              <CheckCircleIcon className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-green-800">{successMessage}</h3>
+                {barcode && (
+                  <div className="mt-2 flex">
+                    <button
+                      onClick={handlePrintBarcode}
+                      className="inline-flex items-center px-2.5 py-1 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+                    >
+                      <PrinterIcon className="-ml-0.5 text-blue  mr-1.5 h-3.5 w-3.5" />
+                      Print Barcode
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
+
         {errorMessage && (
-          <div className="mt-4 p-3 bg-red-100 text-red-800 rounded-lg animate-slide-up">
-            {errorMessage}
+          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-fade-in-up">
+            <div className="flex items-start">
+              <ExclamationCircleIcon className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">{errorMessage}</h3>
+              </div>
+            </div>
           </div>
         )}
       </div>
     </div>
+  </div>
+
   );
 };
 

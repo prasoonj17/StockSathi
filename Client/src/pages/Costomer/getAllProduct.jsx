@@ -385,7 +385,9 @@ const handleDelete = async (productId) => {
                   <th className="py-4 px-6 text-left font-semibold">Purchase Price</th>
                   <th className="py-4 px-6 text-left font-semibold">Selling Price</th>
                   <th className="py-4 px-6 text-left font-semibold">SKU</th>
+                        <th className="py-4 px-6 text-left font-semibold">Status</th>
                   <th className="py-4 px-6 text-left font-semibold">Barcode</th>
+                  
                   <th className="py-4 px-6 text-left font-semibold">Actions</th>
                 </tr>
               </thead>
@@ -414,6 +416,8 @@ const handleDelete = async (productId) => {
                       <td className="py-4 px-6 text-gray-800">{product.purchasePrice ?? 'N/A'}</td>
                       <td className="py-4 px-6 text-gray-800">{product.sellingPrice ?? 'N/A'}</td>
                       <td className="py-4 px-6 text-gray-800">{product.sku || 'N/A'}</td>
+
+                       <td className="py-4 px-6 text-gray-800">{product.stockStatus || 'N/A'}</td>
                    <td className="py-4 px-6">
   {product.barcode ? (
     <button
